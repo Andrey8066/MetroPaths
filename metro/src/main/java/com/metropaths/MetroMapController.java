@@ -210,8 +210,10 @@ public class MetroMapController {
 
         if (startStation == null)
             startStation = station;
+            //startStationLabel.setText(startStation.getStationName());
         else {
             finishStation = station;
+            //finishStationLabel.setText(finishStation.getStationName());
 
             DrawPath(pathFinder.getPath(startStation.getStationId(), finishStation.getStationId()));
 
@@ -219,9 +221,10 @@ public class MetroMapController {
         }
     }
 
-    /*public void handleResetButton() throws Exception{
+    public void handleResetButton() throws Exception{
+        this.metroPathsVBox.getChildren().clear();
         drawMap();
-        this.startStationLabel.setText(null);
-        this.finishStationLabel.setText(null);
-    }*/
+        //this.startStationLabel.setText(null);
+        //this.finishStationLabel.setText(null);
+    }
 }
