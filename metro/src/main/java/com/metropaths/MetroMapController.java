@@ -35,6 +35,14 @@ public class MetroMapController {
     protected Double widthCoefficient = 1.0;
     protected Double heightCoefficient = 1.0;
 
+    private double mouseAnchorX;
+    private double mouseAnchorY;
+    private double initialTranslateX;
+    private double initialTranslateY;
+
+
+
+
     @FXML
     public void initialize() throws Exception {
         this.databaseHandler = new DatabaseHandler("jdbc:postgresql://127.0.0.1:5432/metropaths", "postgres", "123456");
@@ -55,6 +63,21 @@ public class MetroMapController {
             e.printStackTrace();
         }
     });
+        metroPathsVBox.setOnMousePressed(event -> {
+            mouseAnchorX = event.getSceneX();
+            mouseAnchorY = event.getSceneY();
+        });
+
+        metroPathsVBox.setOnMouseDragged(event -> {
+            double deltaX = event.getSceneX() - mouseAnchorX;
+            double deltaY = event.getSceneY() - mouseAnchorY;
+
+            metroPathsVBox.setLayoutX(metroPathsVBox.getLayoutX() + deltaX);
+            metroPathsVBox.setLayoutY(metroPathsVBox.getLayoutY() + deltaY);
+
+            mouseAnchorX = event.getSceneX();
+            mouseAnchorY = event.getSceneY();
+        });
 
     }
 
@@ -168,3 +191,6 @@ public class MetroMapController {
     }
 
 }
+
+
+
