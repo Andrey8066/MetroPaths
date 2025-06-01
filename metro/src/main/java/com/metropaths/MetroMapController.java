@@ -148,7 +148,7 @@ public class MetroMapController {
 
     protected void DrawPath(Path path) throws SQLException {
         for (Node n : metroPathsVBox.getChildren()) {
-            n.setOpacity(0.3);
+            n.setOpacity(0.2);
         }
         
         for (int i = 0; i < path.path.size() - 1; i++) {
@@ -219,4 +219,9 @@ public class MetroMapController {
         }
     }
 
+    /*public void handleResetButton() throws Exception{
+        drawMap();
+        this.startStationLabel.setText(null);
+        this.finishStationLabel.setText(null);
+    }*/
 }
