@@ -65,6 +65,31 @@ public class MetroMapController {
             mouseAnchorY = event.getSceneY();
         });
 
+        metroPathsVBox.setOnScroll(event -> {
+            if (event.isControlDown()) {
+                double delta = event.getDeltaY();
+                double scaleFactor = 1.0;
+
+                if (delta > 0) {
+                    scaleFactor = 1.1;
+                } else if (delta < 0) {
+                    scaleFactor = 0.9;
+                }
+
+                double newScaleX = metroPathsVBox.getScaleX() * scaleFactor;
+                double newScaleY = metroPathsVBox.getScaleY() * scaleFactor;
+
+                // Ограничения масштаба
+                newScaleX = Math.min(Math.max(newScaleX, 0.5), 3.0);
+                newScaleY = Math.min(Math.max(newScaleY, 0.5), 3.0);
+
+                metroPathsVBox.setScaleX(newScaleX);
+                metroPathsVBox.setScaleY(newScaleY);
+
+                event.consume();
+            }
+        });
+
     }
 
     protected void drawMap() throws Exception {
