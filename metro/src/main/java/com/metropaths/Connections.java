@@ -21,4 +21,8 @@ public class Connections {
     public String getColorById(Integer id) throws SQLException{
         return (new Line(this.databaseHandler.getAllByParam("lines", "id", Integer.toString(id)).get(0))).getColor();
     }
+
+    public Connection getConnectionByStations(Integer id1, Integer id2) throws SQLException{
+        return new Connection(databaseHandler.getAllBy2Param("connections", "station1_id", Integer.toString(id1), "station2_id", Integer.toString(id2)).get(0), databaseHandler);
+    }
 }

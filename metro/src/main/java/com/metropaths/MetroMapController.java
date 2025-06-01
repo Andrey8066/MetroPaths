@@ -113,9 +113,14 @@ public class MetroMapController {
             }
         });
         stationButton.setOnAction(e -> {
-            onClick(station);
+            try{
+                onClick(station);
             this.metroPathsVBox.getChildren().add(new Circle((station.getStationX() + buttonSize)*widthCoefficient, (station.getStationY() + buttonSize)*heightCoefficient,
             buttonSize, Color.AQUAMARINE));
+            }
+            catch (Exception exception){
+                System.out.println(exception);
+            }
         });
 
         stationLabel.setText(station.getStationName());
@@ -141,7 +146,27 @@ public class MetroMapController {
         this.metroPathsVBox.getChildren().add(line);
     }
 
-    protected void onClick(Station station) {
+    protected void DrawPath(Path path) throws SQLException{
+        for (int i = 0; i < path.path.size()-1; i++){
+            System.out.println(path.path);
+            Connection connection = connections.getConnectionByStations(path.path.get(i), path.path.get(i+1));
+            Line line = new Line();
+            System.out.println(i);
+        line.setStartX((connection.getStation1().getStationX() + buttonSize) * widthCoefficient);
+        line.setStartY((connection.getStation1().getStationY() + buttonSize) * heightCoefficient);
+
+        line.setEndX((connection.getStation2().getStationX() + buttonSize) * widthCoefficient);
+        line.setEndY((connection.getStation2().getStationY() + buttonSize) * heightCoefficient);
+
+        line.setStrokeWidth(5);
+
+        line.setStroke(Color.GRAY);
+
+        this.metroPathsVBox.getChildren().add(line);
+        }
+    }
+
+    protected void onClick(Station station) throws SQLException {
 
         try {
 
@@ -160,8 +185,13 @@ public class MetroMapController {
 
                     stationChooseButton.setGraphic(hBox);
                     stationChooseButton.setOnAction(e -> {
-                        chooseStation(s);
-                        stage.close();
+                        try {
+                            chooseStation(s);
+                            stage.close();
+                        }
+                        catch (Exception exception){
+                            System.out.println(exception);
+                        }
                     });
 
                     stationSelectionVBox.getChildren().add(stationChooseButton);
@@ -177,14 +207,14 @@ public class MetroMapController {
         }
     }
 
-    protected void chooseStation(Station station) {
+    protected void chooseStation(Station station) throws SQLException {
 
         if (startStation == null)
             startStation = station;
         else {
             finishStation = station;
-            System.out.print(pathFinder.getPath(startStation.getStationId(), finishStation.getStationId()).lessTime);
-            System.out.print(pathFinder.getPath(startStation.getStationId(), finishStation.getStationId()).path);
+            
+            DrawPath(pathFinder.getPath(startStation.getStationId(), finishStation.getStationId()));
             
             startStation = null;
         }
