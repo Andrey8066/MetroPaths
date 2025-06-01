@@ -23,6 +23,9 @@ public class Connections {
     }
 
     public Connection getConnectionByStations(Integer id1, Integer id2) throws SQLException{
-        return new Connection(databaseHandler.getAllBy2Param("connections", "station1_id", Integer.toString(id1), "station2_id", Integer.toString(id2)).get(0), databaseHandler);
+        ArrayList<String[]> data = databaseHandler.getAllBy2Param("connections", "station1_id", Integer.toString(id1), "station2_id", Integer.toString(id2));
+
+        if (data.size() > 0) return new Connection(data.get(0), databaseHandler);
+        return new Connection(databaseHandler.getAllBy2Param("connections", "station1_id", Integer.toString(id2), "station2_id", Integer.toString(id1)).get(0), databaseHandler);
     }
 }
