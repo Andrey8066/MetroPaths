@@ -31,7 +31,7 @@ public class MetroMapController {
     protected Station startStation = null;
     protected Station finishStation = null;
 
-    protected Integer buttonSize = 7;
+    protected Integer buttonSize = 14;
 
     @FXML
     public void initialize() throws Exception {
@@ -59,12 +59,13 @@ public class MetroMapController {
 
         Button stationButton = new Button();
         Label stationLabel = new Label();
+        Circle stationCircle = new Circle(buttonSize, Color.web(lines.getColorById(station.getLineId())));
 
         stationButton.setLayoutX(station.getStationX());
         stationButton.setLayoutY(station.getStationY());
-        stationButton.setMinSize(buttonSize*4,buttonSize*4);
-        stationButton.setMaxSize(buttonSize*4, buttonSize*4);
-        stationButton.setShape(new Circle(buttonSize, Color.web(lines.getColorById(station.getLineId()))));
+        stationButton.setMinSize(buttonSize*2,buttonSize*2);
+        stationButton.setMaxSize(buttonSize*2, buttonSize*2);
+        stationButton.setOpacity(0);
         stationButton.setStyle("-fx-background-color: " + lines.getColorById(station.getLineId()) + " ;");
         stationButton.setOnAction(e -> onClick(station));
 
@@ -78,11 +79,11 @@ public class MetroMapController {
     protected void DrawConnection(Connection connection) throws SQLException {
         Line line = new Line();
 
-        line.setStartX(connection.getStation1().getStationX() + 5);
-        line.setStartY(connection.getStation1().getStationY() + 5);
+        line.setStartX(connection.getStation1().getStationX() + buttonSize);
+        line.setStartY(connection.getStation1().getStationY() + buttonSize);
 
-        line.setEndX(connection.getStation2().getStationX() + 5);
-        line.setEndY(connection.getStation2().getStationY() + 5);
+        line.setEndX(connection.getStation2().getStationX() + buttonSize);
+        line.setEndY(connection.getStation2().getStationY() + buttonSize);
 
         line.setStrokeWidth(5);
 
