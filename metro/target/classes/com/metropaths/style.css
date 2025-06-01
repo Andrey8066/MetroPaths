@@ -1,0 +1,10 @@
+.root {
+    -fx-background-color: #141414;
+    -fx-text-fill: white;
+}
+
+.label {
+    -fx-text-fill: white;
+    -fx-font-size: 10px;
+    -fx-font-family: "GOST Type B";
+}
