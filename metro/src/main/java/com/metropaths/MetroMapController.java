@@ -1,16 +1,14 @@
 package com.metropaths;
 
-import java.io.IOException;
 import java.sql.SQLException;
 
+import javax.xml.transform.stax.StAXResult;
+
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
-import javafx.scene.chart.PieChart.Data;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -27,6 +25,7 @@ public class MetroMapController {
     protected Lines lines;
     protected Connections connections;
     protected DatabaseHandler databaseHandler;
+    protected PathFinder pathFinder;
 
     protected Station startStation = null;
     protected Station finishStation = null;
@@ -38,9 +37,10 @@ public class MetroMapController {
         this.databaseHandler = new DatabaseHandler("jdbc:postgresql://127.0.0.1:5432/metropaths", "postgres", "123456");
         this.stations = new Stations(databaseHandler);
         this.connections = new Connections(databaseHandler);
+        this.pathFinder = new PathFinder(stations, connections);
         this.lines = new Lines(databaseHandler);
         drawMap();
-        
+
     }
 
     protected void drawMap() throws Exception {
@@ -55,21 +55,18 @@ public class MetroMapController {
     }
 
     protected void DrawStation(Station station) throws SQLException {
-        
 
         Button stationButton = new Button();
         Label stationLabel = new Label();
-        Circle stationCircle = new Circle(station.getStationX()+buttonSize, station.getStationY()+buttonSize, buttonSize, Color.web(lines.getColorById(station.getLineId())));
-
-
+        Circle stationCircle = new Circle(station.getStationX() + buttonSize, station.getStationY() + buttonSize,
+                buttonSize, Color.web(lines.getColorById(station.getLineId())));
 
         stationButton.setLayoutX(station.getStationX());
         stationButton.setLayoutY(station.getStationY());
-        stationButton.setMinSize(buttonSize*2,buttonSize*2);
-        stationButton.setMaxSize(buttonSize*2, buttonSize*2);
+        stationButton.setMinSize(buttonSize * 2, buttonSize * 2);
+        stationButton.setMaxSize(buttonSize * 2, buttonSize * 2);
         stationButton.setShape(new Circle(buttonSize));
         stationButton.setOpacity(0);
-        //stationButton.setStyle("-fx-background-color: #ffffff ;");
         stationButton.hoverProperty().addListener((obs, oldVal, isHovering) -> {
             if (isHovering) {
                 stationButton.setOpacity(0.3);
@@ -102,50 +99,53 @@ public class MetroMapController {
         this.metroPathsVBox.getChildren().add(line);
     }
 
-    protected void onClick(Station station){
-        
+    protected void onClick(Station station) {
+
         try {
-            
-        if (station.isTransfer()) {
-            System.out.println(1);
-            Stage stage = new Stage();
-            VBox stationSelectionVBox  = new VBox();
-            for (Station s: stations.geStationsByCoords(station.getStationX(), station.getStationY()))
-            {
-                Button stationChooseButton = new Button();
-                HBox hBox = new HBox();
 
-                hBox.setPadding(new Insets(10));
-                hBox.setSpacing(10);
-                hBox.getChildren().add(new Circle(buttonSize, Color.web(lines.getColorById(s.getLineId()))));
-                hBox.getChildren().add(new Label(s.getStationName()));
+            if (station.isTransfer()) {
+                System.out.println(1);
+                Stage stage = new Stage();
+                VBox stationSelectionVBox = new VBox();
+                for (Station s : stations.geStationsByCoords(station.getStationX(), station.getStationY())) {
+                    Button stationChooseButton = new Button();
+                    HBox hBox = new HBox();
 
-                stationChooseButton.setGraphic(hBox);
-                stationChooseButton.setOnAction(e -> {
-                    chooseStation(s);
-                    stage.close();
-                });
+                    hBox.setPadding(new Insets(10));
+                    hBox.setSpacing(10);
+                    hBox.getChildren().add(new Circle(buttonSize, Color.web(lines.getColorById(s.getLineId()))));
+                    hBox.getChildren().add(new Label(s.getStationName()));
 
-                stationSelectionVBox.getChildren().add(stationChooseButton);
+                    stationChooseButton.setGraphic(hBox);
+                    stationChooseButton.setOnAction(e -> {
+                        chooseStation(s);
+                        stage.close();
+                    });
+
+                    stationSelectionVBox.getChildren().add(stationChooseButton);
+                }
+                stage.setScene(new Scene(stationSelectionVBox));
+                stage.show();
+
+            } else {
+                chooseStation(station);
             }
-            stage.setScene(new Scene(stationSelectionVBox));
-            stage.show();
-
-            
-        } else {
-           chooseStation(station);
-        }}
-        catch (Exception exception){
+        } catch (Exception exception) {
             System.err.println(exception);
         }
     }
 
-    protected void chooseStation(Station station){
+    protected void chooseStation(Station station) {
+
         if (startStation == null)
-                startStation = station;
-            else
-                finishStation = station;
+            startStation = station;
+        else {
+            finishStation = station;
+            System.out.print(pathFinder.getPath(startStation.getStationId(), finishStation.getStationId()).lessTime);
+            System.out.print(pathFinder.getPath(startStation.getStationId(), finishStation.getStationId()).path);
+            
+            startStation = null;
+        }
     }
 
-    
 }

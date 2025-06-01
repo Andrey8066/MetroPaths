@@ -35,7 +35,7 @@ public class Station {
         this.stationY = Integer.parseInt(data[4]);
         this.textX = Integer.parseInt(data[5]);
         this.textY = Integer.parseInt(data[6]);
-        this.isTransfer = !((int) data[3].charAt(0) == 116);
+        this.isTransfer = ((int) data[7].charAt(0) == 116);
     }
 
 

@@ -155,8 +155,12 @@ public class DatabaseHandler { // Класс для работы с psql
     }
 
     public Integer getNumberofColumns(String table) throws SQLException{
+        Integer numbers = 0;;
         ResultSet r = this.statement.executeQuery("SELECT COUNT(id) from " + table);
-        return r.getInt(1);
+        while (r.next()) {
+            numbers = r.getInt("count");
+        }
+        return  numbers;
     }
 
     protected void finalize() throws Throwable {
