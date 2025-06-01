@@ -59,21 +59,31 @@ public class MetroMapController {
 
         Button stationButton = new Button();
         Label stationLabel = new Label();
-        Circle stationCircle = new Circle(buttonSize, Color.web(lines.getColorById(station.getLineId())));
+        Circle stationCircle = new Circle(station.getStationX()+buttonSize, station.getStationY()+buttonSize, buttonSize, Color.web(lines.getColorById(station.getLineId())));
+
+
 
         stationButton.setLayoutX(station.getStationX());
         stationButton.setLayoutY(station.getStationY());
         stationButton.setMinSize(buttonSize*2,buttonSize*2);
         stationButton.setMaxSize(buttonSize*2, buttonSize*2);
+        stationButton.setShape(new Circle(buttonSize));
         stationButton.setOpacity(0);
-        stationButton.setStyle("-fx-background-color: " + lines.getColorById(station.getLineId()) + " ;");
+        //stationButton.setStyle("-fx-background-color: #ffffff ;");
+        stationButton.hoverProperty().addListener((obs, oldVal, isHovering) -> {
+            if (isHovering) {
+                stationButton.setOpacity(0.3);
+            } else {
+                stationButton.setOpacity(0);
+            }
+        });
         stationButton.setOnAction(e -> onClick(station));
 
         stationLabel.setText(station.getStationName());
-        stationLabel.setLayoutX(station.getStationX());
-        stationLabel.setLayoutY(station.getStationY());
+        stationLabel.setLayoutX(station.getTextX());
+        stationLabel.setLayoutY(station.getTextY());
 
-        this.metroPathsVBox.getChildren().addAll(stationButton, stationLabel);
+        this.metroPathsVBox.getChildren().addAll(stationCircle, stationLabel, stationButton);
     }
 
     protected void DrawConnection(Connection connection) throws SQLException {

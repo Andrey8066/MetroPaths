@@ -154,6 +154,11 @@ public class DatabaseHandler { // Класс для работы с psql
         stmt.execute();
     }
 
+    public Integer getNumberofColumns(String table) throws SQLException{
+        ResultSet r = this.statement.executeQuery("SELECT COUNT(id) from " + table);
+        return r.getInt(1);
+    }
+
     protected void finalize() throws Throwable {
         try {
             connection.close();

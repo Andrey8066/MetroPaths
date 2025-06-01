@@ -38,4 +38,8 @@ public class Stations {
         }
         return res;
     }
+
+    public Integer getNumberofColumns() throws SQLException{
+        return databaseHandler.getNumberofColumns("stations");
+    }
 }
