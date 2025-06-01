@@ -17,6 +17,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.stage.Stage;
+import javafx.scene.Node;
 
 public class MetroMapController {
     @FXML
@@ -40,9 +41,6 @@ public class MetroMapController {
     private double initialTranslateX;
     private double initialTranslateY;
 
-
-
-
     @FXML
     public void initialize() throws Exception {
         this.databaseHandler = new DatabaseHandler("jdbc:postgresql://127.0.0.1:5432/metropaths", "postgres", "123456");
@@ -52,17 +50,17 @@ public class MetroMapController {
         this.lines = new Lines(databaseHandler);
         drawMap();
 
-         Platform.runLater(() -> {
+        Platform.runLater(() -> {
 
-        this.widthCoefficient = metroPathsVBox.getScene().getWidth()/1600;
-        this.heightCoefficient = metroPathsVBox.getScene().getHeight()/1200;
-        this.buttonSize = this.buttonSize*this.widthCoefficient;
-        try {
-            drawMap();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    });
+            this.widthCoefficient = metroPathsVBox.getScene().getWidth() / 1600;
+            this.heightCoefficient = metroPathsVBox.getScene().getHeight() / 1200;
+            this.buttonSize = this.buttonSize * this.widthCoefficient;
+            try {
+                drawMap();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
         metroPathsVBox.setOnMousePressed(event -> {
             mouseAnchorX = event.getSceneX();
             mouseAnchorY = event.getSceneY();
@@ -79,29 +77,6 @@ public class MetroMapController {
             mouseAnchorY = event.getSceneY();
         });
 
-        metroPathsVBox.setOnScroll(event -> {
-            if (event.isControlDown()) {
-                double delta = event.getDeltaY();
-                double scaleFactor = 1.0;
-
-                if (delta > 0) {
-                    scaleFactor = 1.1;
-                } else if (delta < 0) {
-                    scaleFactor = 0.9;
-                }
-
-                double newScaleX = metroPathsVBox.getScaleX() * scaleFactor;
-                double newScaleY = metroPathsVBox.getScaleY() * scaleFactor;
-
-                newScaleX = Math.min(Math.max(newScaleX, 0.5), 3.0);
-                newScaleY = Math.min(Math.max(newScaleY, 0.5), 3.0);
-
-                metroPathsVBox.setScaleX(newScaleX);
-                metroPathsVBox.setScaleY(newScaleY);
-
-                event.consume();
-            }
-        });
     }
 
     protected void drawMap() throws Exception {
@@ -119,11 +94,12 @@ public class MetroMapController {
 
         Button stationButton = new Button();
         Label stationLabel = new Label();
-        Circle stationCircle = new Circle((station.getStationX() + buttonSize)*widthCoefficient, (station.getStationY() + buttonSize)*heightCoefficient,
+        Circle stationCircle = new Circle((station.getStationX() + buttonSize) * widthCoefficient,
+                (station.getStationY() + buttonSize) * heightCoefficient,
                 buttonSize, Color.web(lines.getColorById(station.getLineId())));
 
-        stationButton.setLayoutX(station.getStationX()*widthCoefficient);
-        stationButton.setLayoutY(station.getStationY()*heightCoefficient);
+        stationButton.setLayoutX(station.getStationX() * widthCoefficient);
+        stationButton.setLayoutY(station.getStationY() * heightCoefficient);
         stationButton.setMinSize(buttonSize * 2, buttonSize * 2);
         stationButton.setMaxSize(buttonSize * 2, buttonSize * 2);
         stationButton.setShape(new Circle(buttonSize));
@@ -136,9 +112,15 @@ public class MetroMapController {
             }
         });
         stationButton.setOnAction(e -> {
-            onClick(station);
-            this.metroPathsVBox.getChildren().add(new Circle((station.getStationX() + buttonSize)*widthCoefficient, (station.getStationY() + buttonSize)*heightCoefficient,
-            buttonSize, Color.AQUAMARINE));
+            try {
+                onClick(station);
+                this.metroPathsVBox.getChildren()
+                        .add(new Circle((station.getStationX() + buttonSize) * widthCoefficient,
+                                (station.getStationY() + buttonSize) * heightCoefficient,
+                                buttonSize, Color.AQUAMARINE));
+            } catch (Exception exception) {
+                System.out.println(exception);
+            }
         });
 
         stationLabel.setText(station.getStationName());
@@ -164,7 +146,27 @@ public class MetroMapController {
         this.metroPathsVBox.getChildren().add(line);
     }
 
-    protected void onClick(Station station) {
+    protected void DrawPath(Path path) throws SQLException {
+        for (Node n : metroPathsVBox.getChildren()) {
+            n.setOpacity(0.3);
+        }
+        
+        for (int i = 0; i < path.path.size() - 1; i++) {
+            System.out.println(path.path.get(i));
+            Connection connection = connections.getConnectionByStations(path.path.get(i), path.path.get(i + 1));
+            System.out.println(path.path.get(i));
+            if (!connection.isTransfer()) {
+                System.out.println(path.path);
+                DrawConnection(connection);
+                DrawStation(connection.station1);
+            }
+            else {
+                DrawStation(connection.station1);
+            }
+        }
+    }
+
+    protected void onClick(Station station) throws SQLException {
 
         try {
 
@@ -183,8 +185,12 @@ public class MetroMapController {
 
                     stationChooseButton.setGraphic(hBox);
                     stationChooseButton.setOnAction(e -> {
-                        chooseStation(s);
-                        stage.close();
+                        try {
+                            chooseStation(s);
+                            stage.close();
+                        } catch (Exception exception) {
+                            System.out.println(exception);
+                        }
                     });
 
                     stationSelectionVBox.getChildren().add(stationChooseButton);
@@ -200,20 +206,17 @@ public class MetroMapController {
         }
     }
 
-    protected void chooseStation(Station station) {
+    protected void chooseStation(Station station) throws SQLException {
 
         if (startStation == null)
             startStation = station;
         else {
             finishStation = station;
-            System.out.print(pathFinder.getPath(startStation.getStationId(), finishStation.getStationId()).lessTime);
-            System.out.print(pathFinder.getPath(startStation.getStationId(), finishStation.getStationId()).path);
-            
+
+            DrawPath(pathFinder.getPath(startStation.getStationId(), finishStation.getStationId()));
+
             startStation = null;
         }
     }
 
 }
-
-
-
