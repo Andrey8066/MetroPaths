@@ -37,6 +37,7 @@ public class MetroMapController {
     protected Station finishStation = null;
 
     protected double buttonSize = 14.0;
+    protected double standartButtonSize = 14.0;
     protected double widthCoefficient = 1.0;
     protected double heightCoefficient = 1.0;
 
@@ -55,11 +56,27 @@ public class MetroMapController {
         timeLabel.setOpacity(0);
 
         Platform.runLater(() -> {
+            try {
+            this.metroPathsVBox.getScene().widthProperty().addListener((obs, oldVal, newVal) -> {
+                try{
+                    this.widthCoefficient = metroPathsVBox.getScene().getWidth() / 1600;
+                    this.buttonSize = this.standartButtonSize * Math.sqrt(this.widthCoefficient*this.heightCoefficient);
+                redrawMap();
 
+            } catch (Exception e) { System.out.println(e);}
+            });
+            
+            this.metroPathsVBox.getScene().heightProperty().addListener((obs, oldVal, newVal) -> {
+                try{
+                    this.heightCoefficient = metroPathsVBox.getScene().getHeight() / 1200;
+                    this.buttonSize = this.standartButtonSize * Math.sqrt(this.widthCoefficient*this.heightCoefficient);
+                redrawMap();
+                } catch (Exception e) { System.out.println(e);}
+            });
             this.widthCoefficient = metroPathsVBox.getScene().getWidth() / 1600;
             this.heightCoefficient = metroPathsVBox.getScene().getHeight() / 1200;
-            this.buttonSize = this.buttonSize * Math.sqrt(this.widthCoefficient*this.heightCoefficient);
-            try {
+            this.buttonSize = this.standartButtonSize * Math.sqrt(this.widthCoefficient*this.heightCoefficient);
+            
                 drawMap();
             } catch (Exception e) {
                 e.printStackTrace();
@@ -108,13 +125,18 @@ public class MetroMapController {
 
     protected void drawMap() throws Exception {
 
+        for (Connection connection : connections.GetAll()) {
+            DrawConnection(connection);
+        }
+        
         for (Station station : stations.GetAll()) {
             DrawStation(station);
         }
 
-        for (Connection connection : connections.GetAll()) {
-            DrawConnection(connection);
-        }
+    }
+    protected void redrawMap() throws Exception{
+        this.metroPathsVBox.getChildren().clear();
+        drawMap();
     }
 
     protected void DrawStation(Station station) throws SQLException {
@@ -161,7 +183,7 @@ public class MetroMapController {
         Line line = new Line();
 
         line.setStartX(connection.getStation1().getStationX()* widthCoefficient + buttonSize);
-        line.setStartY(connection.getStation1().getStationY()* widthCoefficient + buttonSize);
+        line.setStartY(connection.getStation1().getStationY()* heightCoefficient + buttonSize);
 
         line.setEndX(connection.getStation2().getStationX()* widthCoefficient + buttonSize);
         line.setEndY(connection.getStation2().getStationY()* heightCoefficient + buttonSize);
