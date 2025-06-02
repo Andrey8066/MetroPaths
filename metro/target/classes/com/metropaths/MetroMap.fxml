@@ -46,6 +46,15 @@
                    style="-fx-font-weight: bold;" />
             <Button text="Сброс" onAction="#onResetClick" maxWidth="80"/>
         </VBox>
+       <Label text="ТЫндекс Метро 🚇"
+              fx:id="footerLabel"
+              style="-fx-font-size: 18px; -fx-text-fill:rgb(136, 31, 31);"
+              AnchorPane.bottomAnchor="10"
+              AnchorPane.leftAnchor="0"
+              AnchorPane.rightAnchor="0"
+              alignment="CENTER"
+       />
     </children>
+
 
 </AnchorPane>
