@@ -42,6 +42,12 @@ public class MetroMapController {
     private double initialTranslateY;
 
     @FXML
+    private Label startStationLabel;
+    
+    @FXML
+    private Label finishStationLabel;
+
+    @FXML
     public void initialize() throws Exception {
         this.databaseHandler = new DatabaseHandler("jdbc:postgresql://127.0.0.1:5432/metropaths", "postgres", "123456");
         this.stations = new Stations(databaseHandler);
@@ -53,7 +59,7 @@ public class MetroMapController {
 
             this.widthCoefficient = metroPathsVBox.getScene().getWidth() / 1600;
             this.heightCoefficient = metroPathsVBox.getScene().getHeight() / 1200;
-            this.buttonSize = this.buttonSize * this.widthCoefficient;
+            this.buttonSize = this.buttonSize * Math.sqrt(this.widthCoefficient*this.heightCoefficient);
             try {
                 drawMap();
             } catch (Exception e) {
@@ -75,7 +81,30 @@ public class MetroMapController {
             mouseAnchorX = event.getSceneX();
             mouseAnchorY = event.getSceneY();
         });
+        
+        metroPathsVBox.setOnScroll(event -> {
+            if (event.isControlDown()) { // или event.isInertia() для тачпада
+                double delta = event.getDeltaY();
 
+                double scaleFactor = 1.0;
+                if (delta > 0) {
+                    scaleFactor = 1.1;
+                } else if (delta < 0) {
+                    scaleFactor = 0.9;
+                }
+
+                double newScaleX = metroPathsVBox.getScaleX() * scaleFactor;
+                double newScaleY = metroPathsVBox.getScaleY() * scaleFactor;
+
+                newScaleX = Math.min(Math.max(newScaleX, 0.5), 3.0);
+                newScaleY = Math.min(Math.max(newScaleY, 0.5), 3.0);
+
+                metroPathsVBox.setScaleX(newScaleX);
+                metroPathsVBox.setScaleY(newScaleY);
+
+                event.consume();
+            }
+        });
     }
 
     protected void drawMap() throws Exception {
@@ -93,8 +122,8 @@ public class MetroMapController {
 
         Button stationButton = new Button();
         Label stationLabel = new Label();
-        Circle stationCircle = new Circle((station.getStationX() + buttonSize) * widthCoefficient,
-                (station.getStationY() + buttonSize) * heightCoefficient,
+        Circle stationCircle = new Circle((station.getStationX()* widthCoefficient + buttonSize) ,
+                (station.getStationY()* heightCoefficient + buttonSize) ,
                 buttonSize, Color.web(lines.getColorById(station.getLineId())));
 
         stationButton.setLayoutX(station.getStationX() * widthCoefficient);
@@ -205,25 +234,28 @@ public class MetroMapController {
         }
     }
 
-    protected void chooseStation(Station station) throws SQLException {
+    @FXML
+    private void onResetClick() throws Exception{
+        startStation = null;
+        finishStation = null;
+        startStationLabel.setText("Отправная: -");
+        finishStationLabel.setText("Конечная: -");
+        this.metroPathsVBox.getChildren().clear();
+        drawMap();
+    }
 
-        if (startStation == null)
+    protected void chooseStation(Station station) throws SQLException{
+        if (startStation == null) {
             startStation = station;
-            //startStationLabel.setText(startStation.getStationName());
+            startStationLabel.setText("Отправная: -" + startStation.getStationName());
+        }
         else {
             finishStation = station;
-            //finishStationLabel.setText(finishStation.getStationName());
+            finishStationLabel.setText("Конечная: -" + finishStation.getStationName());
 
             DrawPath(pathFinder.getPath(startStation.getStationId(), finishStation.getStationId()));
 
             startStation = null;
         }
-    }
-
-    public void handleResetButton() throws Exception{
-        this.metroPathsVBox.getChildren().clear();
-        drawMap();
-        //this.startStationLabel.setText(null);
-        //this.finishStationLabel.setText(null);
     }
 }
