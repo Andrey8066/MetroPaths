@@ -2,8 +2,6 @@ package com.metropaths;
 
 import java.sql.SQLException;
 
-import javax.xml.transform.stax.StAXResult;
-
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
@@ -22,6 +20,12 @@ import javafx.scene.Node;
 public class MetroMapController {
     @FXML
     protected Pane metroPathsVBox;
+    @FXML
+    private Label startStationLabel;
+    @FXML
+    private Label finishStationLabel;
+    @FXML
+    private Label timeLabel;
 
     protected Stations stations;
     protected Lines lines;
@@ -32,20 +36,14 @@ public class MetroMapController {
     protected Station startStation = null;
     protected Station finishStation = null;
 
-    protected Double buttonSize = 14.0;
-    protected Double widthCoefficient = 1.0;
-    protected Double heightCoefficient = 1.0;
+    protected double buttonSize = 14.0;
+    protected double widthCoefficient = 1.0;
+    protected double heightCoefficient = 1.0;
 
     private double mouseAnchorX;
     private double mouseAnchorY;
     private double initialTranslateX;
     private double initialTranslateY;
-
-    @FXML
-    private Label startStationLabel;
-    
-    @FXML
-    private Label finishStationLabel;
 
     @FXML
     public void initialize() throws Exception {
@@ -54,6 +52,7 @@ public class MetroMapController {
         this.connections = new Connections(databaseHandler);
         this.pathFinder = new PathFinder(stations, connections);
         this.lines = new Lines(databaseHandler);
+        timeLabel.setOpacity(0);
 
         Platform.runLater(() -> {
 
@@ -175,6 +174,8 @@ public class MetroMapController {
     }
 
     protected void DrawPath(Path path) throws SQLException {
+        this.timeLabel.setText("Время в пути: " +  Math.round( path.lessTime) + " мин");
+        timeLabel.setOpacity(1);
         for (Node n : metroPathsVBox.getChildren()) {
             n.setOpacity(0.2);
         }
@@ -240,6 +241,7 @@ public class MetroMapController {
         finishStation = null;
         startStationLabel.setText("Отправная: -");
         finishStationLabel.setText("Конечная: -");
+        timeLabel.setOpacity(0);
         this.metroPathsVBox.getChildren().clear();
         drawMap();
     }
@@ -247,11 +249,11 @@ public class MetroMapController {
     protected void chooseStation(Station station) throws SQLException{
         if (startStation == null) {
             startStation = station;
-            startStationLabel.setText("Отправная: -" + startStation.getStationName());
+            startStationLabel.setText("Отправная: " + startStation.getStationName());
         }
         else {
             finishStation = station;
-            finishStationLabel.setText("Конечная: -" + finishStation.getStationName());
+            finishStationLabel.setText("Конечная: " + finishStation.getStationName());
 
             DrawPath(pathFinder.getPath(startStation.getStationId(), finishStation.getStationId()));
 

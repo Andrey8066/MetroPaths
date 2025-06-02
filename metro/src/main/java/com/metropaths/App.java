@@ -17,7 +17,7 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-    scene = new Scene(loadFXML("MetroMap"), 800, 600);
+    scene = new Scene(loadFXML("MetroMap"), 1600, 1200);
     
     scene.getStylesheets().add(App.class.getResource("style.css").toExternalForm());
     

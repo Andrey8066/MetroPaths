@@ -39,10 +39,13 @@
                    maxWidth="200"
                    wrapText="true"
                    style="-fx-font-weight: bold;" />
-
+            <Label fx:id="timeLabel"
+                   text="Время в пути: "
+                   maxWidth="200"
+                   wrapText="true"
+                   style="-fx-font-weight: bold;" />
             <Button text="Сброс" onAction="#onResetClick" maxWidth="80"/>
         </VBox>
     </children>
 
 </AnchorPane>
-
