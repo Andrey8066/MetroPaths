@@ -5,56 +5,58 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ToggleButton?>
 
 <AnchorPane xmlns="http://javafx.com/javafx/8.0.171"
-            xmlns:fx="http://javafx/fxml/1"
-            fx:controller="com.metropaths.MetroMapController">
+       xmlns:fx="http://javafx/fxml/1"
+       fx:controller="com.metropaths.MetroMapController">
 
-    <children>
-        <!-- Карта -->
-        <Pane fx:id="metroPathsVBox" />
+       <children>
+              <!-- Карта -->
+              <Pane fx:id="metroPathsVBox" />
 
-        <!-- Панель с инфо -->
-        <VBox fx:id="infoPanel"
-              styleClass="info-panel"
-              spacing="5"
-              alignment="TOP_RIGHT"
-              AnchorPane.topAnchor="10"
-              AnchorPane.rightAnchor="10"
-              prefWidth="220"
-              prefHeight="100"      
-              minWidth="220"
-              maxWidth="220"
-              minHeight="100"
-              maxHeight="100">
+              <!-- Панель с инфо -->
+              <VBox fx:id="infoPanel"
+                     styleClass="info-panel"
+                     spacing="5"
+                     alignment="TOP_RIGHT"
+                     AnchorPane.topAnchor="10"
+                     AnchorPane.rightAnchor="10"
+                     prefWidth="220"
+                     prefHeight="100"
+                     minWidth="220"
+                     maxWidth="220"
+                     minHeight="100"
+                     maxHeight="100">
 
-            <Label fx:id="startStationLabel"
-                   text="Отправная: -"
-                   maxWidth="200"
-                   wrapText="true"
-                   style="-fx-font-weight: bold;" />
+                     <Label fx:id="startStationLabel"
+                            text="Отправная: -"
+                            maxWidth="200"
+                            wrapText="true"
+                            style="-fx-font-weight: bold;" />
 
-            <Label fx:id="finishStationLabel"
-                   text="Конечная: -"
-                   maxWidth="200"
-                   wrapText="true"
-                   style="-fx-font-weight: bold;" />
-            <Label fx:id="timeLabel"
-                   text="Время в пути: "
-                   maxWidth="200"
-                   wrapText="true"
-                   style="-fx-font-weight: bold;" />
-            <Button text="Сброс" onAction="#onResetClick" maxWidth="80"/>
-        </VBox>
-       <Label text="ТЫндекс Метро 🚇"
-              fx:id="footerLabel"
-              style="-fx-font-size: 18px; -fx-text-fill:rgb(136, 31, 31);"
-              AnchorPane.bottomAnchor="10"
-              AnchorPane.leftAnchor="0"
-              AnchorPane.rightAnchor="0"
-              alignment="CENTER"
-       />
-    </children>
+                     <Label fx:id="finishStationLabel"
+                            text="Конечная: -"
+                            maxWidth="200"
+                            wrapText="true"
+                            style="-fx-font-weight: bold;" />
+                     <Label fx:id="timeLabel"
+                            text="Время в пути: "
+                            maxWidth="200"
+                            wrapText="true"
+                            style="-fx-font-weight: bold;" />
+                     <ToggleButton id="SelectFindButton" text="Быстрее" onAction="#setPathSearchingParam" maxWidth="80" />
+                     <Button text="Сброс" onAction="#onResetClick" maxWidth="80" />
+              </VBox>
+              <Label text="ТЫндекс Метро 🚇"
+                     fx:id="footerLabel"
+                     style="-fx-font-size: 18px; -fx-text-fill:rgb(136, 31, 31);"
+                     AnchorPane.bottomAnchor="10"
+                     AnchorPane.leftAnchor="0"
+                     AnchorPane.rightAnchor="0"
+                     alignment="CENTER"
+              />
+       </children>
 
 
 </AnchorPane>

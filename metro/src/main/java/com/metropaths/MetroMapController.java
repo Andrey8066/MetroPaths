@@ -8,6 +8,7 @@ import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -26,6 +27,8 @@ public class MetroMapController {
     private Label finishStationLabel;
     @FXML
     private Label timeLabel;
+    @FXML
+    private ToggleButton SelectFindButton;
 
     protected Stations stations;
     protected Lines lines;
@@ -203,11 +206,8 @@ public class MetroMapController {
         }
         
         for (int i = 0; i < path.path.size() - 1; i++) {
-            System.out.println(path.path.get(i));
             Connection connection = connections.getConnectionByStations(path.path.get(i), path.path.get(i + 1));
-            System.out.println(path.path.get(i));
             if (!connection.isTransfer()) {
-                System.out.println(path.path);
                 DrawConnection(connection);
                 DrawStation(connection.station1);
             }
@@ -222,7 +222,6 @@ public class MetroMapController {
         try {
 
             if (station.isTransfer()) {
-                System.out.println(1);
                 Stage stage = new Stage();
                 VBox stationSelectionVBox = new VBox();
                 for (Station s : stations.geStationsByCoords(station.getStationX(), station.getStationY())) {
@@ -268,6 +267,15 @@ public class MetroMapController {
         drawMap();
     }
 
+    @FXML
+    private void setPathSearchingParam() throws Exception{
+
+        this.pathFinder.setPathSearchingParam();
+        if (startStation!=null && finishStation!=null){
+            DrawPath(pathFinder.getPath(startStation.getStationId(), finishStation.getStationId()));
+        }
+    }
+
     protected void chooseStation(Station station) throws SQLException{
         if (startStation == null) {
             startStation = station;
@@ -282,4 +290,6 @@ public class MetroMapController {
             startStation = null;
         }
     }
+
+
 }

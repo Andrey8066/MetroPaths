@@ -42,7 +42,6 @@ public class DatabaseHandler { // Класс для работы с psql
                                                                                                              // условию
         ArrayList<String[]> lines = new ArrayList<>();
         ResultSet r = this.statement.executeQuery("SELECT * FROM " + table + " WHERE " + param + " = '" + value + "';");
-
         while (r.next()) {
             String[] row = new String[r.getMetaData().getColumnCount()];
 
