@@ -48,7 +48,6 @@ public class MetroMapController {
         this.connections = new Connections(databaseHandler);
         this.pathFinder = new PathFinder(stations, connections);
         this.lines = new Lines(databaseHandler);
-        drawMap();
 
         Platform.runLater(() -> {
 
@@ -115,8 +114,8 @@ public class MetroMapController {
             try {
                 onClick(station);
                 this.metroPathsVBox.getChildren()
-                        .add(new Circle((station.getStationX() + buttonSize) * widthCoefficient,
-                                (station.getStationY() + buttonSize) * heightCoefficient,
+                        .add(new Circle((station.getStationX()* widthCoefficient + buttonSize) ,
+                                (station.getStationY()* heightCoefficient + buttonSize),
                                 buttonSize, Color.AQUAMARINE));
             } catch (Exception exception) {
                 System.out.println(exception);
@@ -133,11 +132,11 @@ public class MetroMapController {
     protected void DrawConnection(Connection connection) throws SQLException {
         Line line = new Line();
 
-        line.setStartX((connection.getStation1().getStationX() + buttonSize) * widthCoefficient);
-        line.setStartY((connection.getStation1().getStationY() + buttonSize) * heightCoefficient);
+        line.setStartX(connection.getStation1().getStationX()* widthCoefficient + buttonSize);
+        line.setStartY(connection.getStation1().getStationY()* widthCoefficient + buttonSize);
 
-        line.setEndX((connection.getStation2().getStationX() + buttonSize) * widthCoefficient);
-        line.setEndY((connection.getStation2().getStationY() + buttonSize) * heightCoefficient);
+        line.setEndX(connection.getStation2().getStationX()* widthCoefficient + buttonSize);
+        line.setEndY(connection.getStation2().getStationY()* heightCoefficient + buttonSize);
 
         line.setStrokeWidth(5);
 
