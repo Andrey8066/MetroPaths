@@ -8,3 +8,46 @@
     -fx-font-size: 10px;
     -fx-font-family: "GOST Type B";
 }
+
+.info-panel {
+    -fx-background-color: rgba(40, 40, 40, 0.8);
+    -fx-padding: 10;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+}
+
+.info-panel Label {
+    -fx-text-fill: white;
+    -fx-font-size: 13px;
+}
+
+.info-panel Button {
+    -fx-background-color: #333;
+    -fx-text-fill: white;
+    -fx-background-radius: 6;
+}
+
+.info-panel Button:hover {
+    -fx-background-color: #444;
+}
+
+.info-panel ToggleButton{
+    -fx-background-color: #333;
+    -fx-text-fill: white;
+    -fx-background-radius: 6;
+}
+
+.info-panel ToggleButton:hover{
+    -fx-background-color: #444;
+}
+
+.toggle-button:selected {
+    -fx-text:"Удобнее";
+    -fx-background-color: #4285F4;
+    -fx-text-fill: white;
+}
+
+.toggle-button:selected:hover {
+    -fx-background-color: #458cff;
+    -fx-text-fill: white;
+}

@@ -3,12 +3,13 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ToggleButton?>
 
-<AnchorPane xmlns="http://javafx.com/javafx/8.0.171"
-       xmlns:fx="http://javafx/fxml/1"
+<AnchorPane xmlns="http://javafx.com/javafx/8"
+       xmlns:fx="http://javafx.com/fxml/1"
        fx:controller="com.metropaths.MetroMapController">
 
        <children>
@@ -45,8 +46,10 @@
                             maxWidth="200"
                             wrapText="true"
                             style="-fx-font-weight: bold;" />
-                     <ToggleButton id="SelectFindButton" text="Быстрее" onAction="#setPathSearchingParam" maxWidth="80" />
+                     <HBox>
+                     <ToggleButton fx:id="SelectFindButton" text="Быстрее" onAction="#setPathSearchingParam" maxWidth="80" />
                      <Button text="Сброс" onAction="#onResetClick" maxWidth="80" />
+                     </HBox>
               </VBox>
               <Label text="ТЫндекс Метро 🚇"
                      fx:id="footerLabel"
@@ -57,6 +60,4 @@
                      alignment="CENTER"
               />
        </children>
-
-
 </AnchorPane>
