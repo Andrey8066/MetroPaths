@@ -274,6 +274,7 @@ public class MetroMapController {
     private void setPathSearchingParam() throws Exception{
 
         this.pathFinder.setPathSearchingParam();
+        this.SelectFindButton.setText((this.SelectFindButton.isSelected())? "Удобнее" : "Быстрее");
         if (startStation!=null && finishStation!=null){
             DrawPath(pathFinder.getPath(startStation.getStationId(), finishStation.getStationId()));
         }

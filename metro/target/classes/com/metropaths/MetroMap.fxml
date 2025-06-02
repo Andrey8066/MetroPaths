@@ -45,8 +45,8 @@
                             maxWidth="200"
                             wrapText="true"
                             style="-fx-font-weight: bold;" />
-                     <ToggleButton id="SelectFindButton" text="Быстрее" onAction="#setPathSearchingParam" maxWidth="80" />
-                     <Button text="Сброс" onAction="#onResetClick" maxWidth="80" />
+                     <ToggleButton fx:id="SelectFindButton" text="Быстрее" onAction="#setPathSearchingParam" maxWidth="80" />
+                     <Button text="Сброс"  onAction="#onResetClick" maxWidth="80" />
               </VBox>
               <Label text="ТЫндекс Метро 🚇"
                      fx:id="footerLabel"
