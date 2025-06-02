@@ -226,4 +226,8 @@ public class PathFinder {
     public void setPathSearchingParam() throws Exception {
         this.pathSearchingParam = !this.pathSearchingParam;
     }
+
+    public boolean getPathSearchingParam(){
+        return this.pathSearchingParam;
+    }
 }
