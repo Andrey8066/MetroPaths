@@ -38,6 +38,7 @@ public class MetroMapController {
 
     protected Station startStation = null;
     protected Station finishStation = null;
+    protected Boolean pathSelected = false;
 
     protected double buttonSize = 14.0;
     protected double standartButtonSize = 14.0;
@@ -199,7 +200,8 @@ public class MetroMapController {
     }
 
     protected void DrawPath(Path path) throws SQLException {
-        this.timeLabel.setText("Время в пути: " +  Math.round( path.lessTime) + " мин");
+        if ( pathFinder.getPathSearchingParam()) this.timeLabel.setText("Время в пути: " +  Math.round( path.lessTime) + " мин");
+        else this.timeLabel.setText("Количество пересадок: " +  Math.round( path.lessTime));
         timeLabel.setOpacity(1);
         for (Node n : metroPathsVBox.getChildren()) {
             n.setOpacity(0.2);
@@ -260,6 +262,7 @@ public class MetroMapController {
     private void onResetClick() throws Exception{
         startStation = null;
         finishStation = null;
+        pathSelected = false;
         startStationLabel.setText("Отправная: -");
         finishStationLabel.setText("Конечная: -");
         timeLabel.setOpacity(0);
@@ -277,17 +280,16 @@ public class MetroMapController {
     }
 
     protected void chooseStation(Station station) throws SQLException{
-        if (startStation == null) {
+        if (!pathSelected && startStation == null) {
             startStation = station;
             startStationLabel.setText("Отправная: " + startStation.getStationName());
         }
         else {
+            pathSelected = true;
             finishStation = station;
             finishStationLabel.setText("Конечная: " + finishStation.getStationName());
 
             DrawPath(pathFinder.getPath(startStation.getStationId(), finishStation.getStationId()));
-
-            startStation = null;
         }
     }
 
