@@ -42,6 +42,12 @@ public class MetroMapController {
     private double initialTranslateY;
 
     @FXML
+    private Label startStationLabel;
+    
+    @FXML
+    private Label finishStationLabel;
+
+    @FXML
     public void initialize() throws Exception {
         this.databaseHandler = new DatabaseHandler("jdbc:postgresql://127.0.0.1:5432/metropaths", "postgres", "123456");
         this.stations = new Stations(databaseHandler);
@@ -229,17 +235,28 @@ public class MetroMapController {
         }
     }
 
-    protected void chooseStation(Station station) throws SQLException {
+    @FXML
+    private void onResetClick() {
+        startStation = null;
+        finishStation = null;
+        startStationLabel.setText("Отправная: -");
+        finishStationLabel.setText("Конечная: -");
+    }
 
-        if (startStation == null)
+    protected void chooseStation(Station station) {
+        if (startStation == null) {
             startStation = station;
-        else {
+            startStationLabel.setText("Отправная: " + station.getStationName());
+        } else {
             finishStation = station;
+            finishStationLabel.setText("Конечная: " + station.getStationName());
 
-            DrawPath(pathFinder.getPath(startStation.getStationId(), finishStation.getStationId()));
+            System.out.print(pathFinder.getPath(startStation.getStationId(), finishStation.getStationId()).lessTime);
+            System.out.print(pathFinder.getPath(startStation.getStationId(), finishStation.getStationId()).path);
 
             startStation = null;
         }
     }
+
 
 }
